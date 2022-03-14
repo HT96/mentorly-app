@@ -24,7 +24,7 @@ module.exports.signUp = async (req, res) => {
 
     req.body.password = await bcrypt.hash(req.body.password, 11);
 
-    const user = await User.create(req.body);
+    const user = await (new User(req.body)).create();
 
     return res.status(201)
       .json({

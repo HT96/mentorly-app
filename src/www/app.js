@@ -1,5 +1,8 @@
 const express = require('express');
 const config = require('config');
+const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes');
+const fieldRoutes = require('./routes/field.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 const db = require('./database/db');
 
@@ -10,14 +13,11 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({extended: true}));
 // connect auth routes
-app.use('/api/v1/auth', require('./routes/auth.routes'));
-
-app.use('/api/v1/test', authMiddleware, function(req, res) {
-  return res.status(200)
-    .json({
-      msg: 'Authenticated'
-    });
-});
+app.use('/api/v1/auth', authRoutes);
+// connect user routes
+app.use('/api/v1/users', authMiddleware, userRoutes);
+// connect field routes
+app.use('/api/v1/fields', authMiddleware, fieldRoutes);
 
 // connect to db
 db.connect((error) => {
